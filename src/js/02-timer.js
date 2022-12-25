@@ -1,9 +1,12 @@
-import flatpickr from 'flatpickr';
+import flatpickr from 'flatpickr'; // імпорт інтерфейсу каландаря
+import { Report } from 'notiflix/build/notiflix-report-aio'; // імпорт інтерфейсу повідомлень
 // Додатковий імпорт стилів
 import 'flatpickr/dist/flatpickr.min.css';
+import 'flatpickr/dist/themes/dark.css';
 
 //вибірка елементів сторінки
 const startBtn = document.querySelector('button[data-start]');
+const input = document.querySelector('#datetime-picker');
 const daysEl = document.querySelector('span[data-days]');
 const hoursEl = document.querySelector('span[data-hours]');
 const minutesEl = document.querySelector('span[data-minutes]');
@@ -22,16 +25,13 @@ const options = {
     const deltaTime = futureTime - startTime;
     if (deltaTime > 0) {
       startBtn.removeAttribute('disabled');
-    } else startBtn.setAttribute('disabled', true);
+    } else {
+      Report.failure('Please choose a date in the future', '', 'Okey');
+      startBtn.setAttribute('disabled', true);
+    }
   },
 };
 flatpickr('#datetime-picker', options); // ініціалізація календаря
-
-// додаємо прослуховувача
-startBtn.addEventListener('click', onStartBtnClick);
-
-//  Код
-startBtn.setAttribute('disabled', true);
 
 const timer = {
   start() {
@@ -40,16 +40,27 @@ const timer = {
       const deltaTime = futureTime - startTime;
 
       const time = convertMs(deltaTime);
-      updateClockFace(time);
+      if (deltaTime > 0) {
+        updateClockFace(time);
+      }
     }, 1000);
+
+    startBtn.setAttribute('disabled', true);
+    input.setAttribute('disabled', true);
   },
 };
 
+// додаємо прослуховувача
+startBtn.addEventListener('click', timer.start.bind(timer));
+
+//  Код
+startBtn.setAttribute('disabled', true);
+
 // сет функцій
 
-function onStartBtnClick() {
-  timer.start();
-}
+// function onStartBtnClick() {
+//   timer.start();
+// }
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
