@@ -14,6 +14,7 @@ const secondsEl = document.querySelector('span[data-seconds]');
 
 let futureTime = null;
 
+// об'єкт налаштувань для календаря
 const options = {
   enableTime: true,
   time_24hr: true,
@@ -57,10 +58,6 @@ startBtn.addEventListener('click', timer.start.bind(timer));
 startBtn.setAttribute('disabled', true);
 
 // сет функцій
-
-// function onStartBtnClick() {
-//   timer.start();
-// }
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
