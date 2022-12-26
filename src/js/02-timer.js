@@ -41,7 +41,9 @@ const timer = {
       const deltaTime = futureTime - startTime;
 
       const time = convertMs(deltaTime);
-      updateClockFace(time);
+      if (deltaTime >= 0) {
+        updateClockFace(time);
+      }
     }, 1000);
 
     startBtn.setAttribute('disabled', true);
