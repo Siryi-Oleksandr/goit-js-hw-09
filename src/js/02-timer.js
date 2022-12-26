@@ -13,6 +13,7 @@ const minutesEl = document.querySelector('span[data-minutes]');
 const secondsEl = document.querySelector('span[data-seconds]');
 
 let futureTime = null;
+let intervalId = null;
 
 // об'єкт налаштувань для календаря
 const options = {
@@ -36,14 +37,12 @@ flatpickr('#datetime-picker', options); // ініціалізація кален
 
 const timer = {
   start() {
-    setInterval(() => {
+    intervalId = setInterval(() => {
       const startTime = Date.now();
       const deltaTime = futureTime - startTime;
 
       const time = convertMs(deltaTime);
-      if (deltaTime >= 0) {
-        updateClockFace(time);
-      }
+      deltaTime < 0 ? clearInterval(intervalId) : updateClockFace(time);
     }, 1000);
 
     startBtn.setAttribute('disabled', true);
@@ -67,7 +66,7 @@ function convertMs(ms) {
   const day = hour * 24;
 
   // Remaining days
-  const days = formatingOutputDays(Math.floor(ms / day));
+  const days = addLeadingZero(Math.floor(ms / day));
   // Remaining hours
   const hours = addLeadingZero(Math.floor((ms % day) / hour));
   // Remaining minutes
@@ -82,12 +81,6 @@ function convertMs(ms) {
 
 function addLeadingZero(value) {
   return String(value).padStart(2, '0');
-}
-function formatingOutputDays(value) {
-  if (String(value).length <= 2) {
-    return String(value).padStart(2, '0');
-  }
-  return String(value);
 }
 
 function updateClockFace({ days, hours, minutes, seconds }) {

@@ -15,27 +15,28 @@ form.addEventListener('submit', onFormSubmit);
 function onFormSubmit(evt) {
   evt.preventDefault();
   const { delay, step, amount } = form.elements;
+  const numDelay = Number(delay.value);
+  const numStep = Number(step.value);
+  const numAmount = Number(amount.value);
 
-  let prevDelay = +delay.value;
+  let prevDelay = numDelay;
 
-  setTimeout(() => {
-    for (let i = 1; i <= +amount.value; i += 1) {
-      createPromise(i, prevDelay)
-        .then(({ position, delay }) =>
-          Notify.success(
-            `✅ Fulfilled promise ${position} in ${delay}ms`,
-            options
-          )
+  for (let i = 1; i <= numAmount; i += 1) {
+    createPromise(i, prevDelay)
+      .then(({ position, delay }) =>
+        Notify.success(
+          `✅ Fulfilled promise ${position} in ${delay}ms`,
+          options
         )
-        .catch(({ position, delay }) =>
-          Notify.failure(
-            `❌ Rejected  promise ${position} in ${delay}ms`,
-            options
-          )
-        );
-      prevDelay += +step.value;
-    }
-  }, +delay.value);
+      )
+      .catch(({ position, delay }) =>
+        Notify.failure(
+          `❌ Rejected  promise ${position} in ${delay}ms`,
+          options
+        )
+      );
+    prevDelay += numStep;
+  }
 }
 
 function createPromise(position, delay) {
