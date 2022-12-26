@@ -21,8 +21,18 @@ function onFormSubmit(evt) {
   setTimeout(() => {
     for (let i = 1; i <= +amount.value; i += 1) {
       createPromise(i, prevDelay)
-        .then(onResolve(i, prevDelay))
-        .catch(onReject(i, prevDelay));
+        .then(({ position, delay }) =>
+          Notify.success(
+            `✅ Fulfilled promise ${position} in ${delay}ms`,
+            options
+          )
+        )
+        .catch(({ position, delay }) =>
+          Notify.failure(
+            `❌ Rejected  promise ${position} in ${delay}ms`,
+            options
+          )
+        );
       prevDelay += +step.value;
     }
   }, +delay.value);
@@ -39,11 +49,4 @@ function createPromise(position, delay) {
       }
     }, delay);
   });
-}
-
-function onResolve(position, delay) {
-  Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`, options);
-}
-function onReject(position, delay) {
-  Notify.failure(`❌ Rejected  promise ${position} in ${delay}ms`, options);
 }
